@@ -1,3 +1,5 @@
+# Written collaboratively by Mahdi Chowdhury and OpenAI Codex.
+# Mahdi: product idea, requirements, and direction. Codex: generated implementation and explanations.
 """Optional HTTP integration checks. Start the server without an API key first."""
 import json
 from urllib.request import urlopen, Request

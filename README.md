@@ -1,5 +1,13 @@
 # Candle Proportions
 
+## Authorship
+
+Written collaboratively by **Mahdi Chowdhury and OpenAI Codex**. Mahdi supplied the product idea, personal requirements, and implementation direction; Codex generated the initial code and explanatory comments under that direction.
+
+This credit covers the Java source, front end, tests, run scripts, Git configuration, and VS Code configuration, including `.vscode/launch.json` and `.vscode/settings.json`. Those two files remain valid JSON without comment headers.
+
+For a line-by-line explanation of the calculations, read the comments in [`src/CandleCalculator.java`](src/CandleCalculator.java).
+
 A personal project to calculate the real-body, upper-wick, and lower-wick percentages of a stock’s daily candlestick.
 
 ## Why I’m Building This

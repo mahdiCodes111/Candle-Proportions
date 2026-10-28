@@ -1,3 +1,5 @@
+/* Written collaboratively by Mahdi Chowdhury and OpenAI Codex.
+Mahdi: product idea, requirements, and direction. Codex: generated implementation and explanations. */
 import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;

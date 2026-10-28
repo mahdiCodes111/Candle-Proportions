@@ -1,3 +1,5 @@
+/* Written collaboratively by Mahdi Chowdhury and OpenAI Codex.
+Mahdi: product idea, requirements, and direction. Codex: generated implementation and explanations. */
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 import java.io.IOException;

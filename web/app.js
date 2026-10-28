@@ -1,3 +1,5 @@
+/* Written collaboratively by Mahdi Chowdhury and OpenAI Codex.
+Mahdi: product idea, requirements, and direction. Codex: generated implementation and explanations. */
 'use strict';
 const $ = id => document.getElementById(id);
 const manual = $('manual-form');
