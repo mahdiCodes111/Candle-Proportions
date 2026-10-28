@@ -17,6 +17,7 @@ import java.util.concurrent.Executors;
 /** Serves the front end and two read-only JSON endpoints using the JDK HTTP server. */
 public final class CandleServer {
     private static final MarketData market = new MarketData(System.getenv("ALPHA_VANTAGE_API_KEY"));
+    private static final CandleChat chat = new CandleChat(System.getenv("OPENAI_API_KEY"), System.getenv("OPENAI_MODEL"));
     public static void main(String[] args) throws IOException {
         int port = Integer.parseInt(System.getenv().getOrDefault("PORT", "8080"));
         HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", port), 0);
@@ -29,13 +30,37 @@ public final class CandleServer {
 
     private static void handle(HttpExchange exchange) throws IOException {
         try {
+            if (exchange.getRequestURI().getPath().equals("/api/chat")) {
+                if (!exchange.getRequestMethod().equals("POST")) {
+                    exchange.getResponseHeaders().set("Allow", "POST");
+                    send(exchange, 405, "application/json", "{\"error\":\"Chat requires POST.\"}"); return;
+                }
+                String host = exchange.getRequestHeaders().getFirst("Host");
+                String origin = exchange.getRequestHeaders().getFirst("Origin");
+                int localPort = exchange.getLocalAddress().getPort();
+                boolean localHost = ("localhost:" + localPort).equals(host) || ("127.0.0.1:" + localPort).equals(host);
+                if (!localHost || !("http://" + host).equals(origin)
+                    || !"1".equals(exchange.getRequestHeaders().getFirst("X-Candle-Chat"))) {
+                    send(exchange, 403, "application/json", "{\"error\":\"Open chat from this app on localhost.\"}"); return;
+                }
+                String contentType = exchange.getRequestHeaders().getFirst("Content-Type");
+                if (contentType == null || !contentType.toLowerCase(java.util.Locale.ROOT).startsWith("application/json")) {
+                    send(exchange, 415, "application/json", "{\"error\":\"Expected JSON.\"}"); return;
+                }
+                byte[] body = exchange.getRequestBody().readNBytes(65537);
+                if (body.length > 65536) {
+                    send(exchange, 413, "application/json", "{\"error\":\"Chat is too long. Clear it and try again.\"}"); return;
+                }
+                String answer = chat.ask(Json.parse(new String(body, StandardCharsets.UTF_8)));
+                send(exchange, 200, "application/json", Json.stringify(Map.of("answer", answer))); return;
+            }
             if (!exchange.getRequestMethod().equals("GET")) {
                 exchange.getResponseHeaders().set("Allow", "GET");
                 send(exchange, 405, "application/json", "{\"error\":\"Only GET is supported.\"}"); return;
             }
             String path = exchange.getRequestURI().getPath();
             if (path.equals("/api/status")) {
-                send(exchange, 200, "application/json", "{\"lookupConfigured\":" + market.configured() + "}"); return;
+                send(exchange, 200, "application/json", "{\"lookupConfigured\":" + market.configured() + ",\"chatConfigured\":" + chat.configured() + "}"); return;
             }
             if (path.equals("/api/calculate")) {
                 Map<String,String> q = query(exchange.getRequestURI().getRawQuery());
@@ -59,7 +84,7 @@ public final class CandleServer {
                     + ",\"date\":" + quote(selected.toString()) + ",\"fetchedAt\":" + quote(series.fetchedAt().toString())
                     + ",\"candle\":" + candle.json() + "}"); return;
             }
-            String file = switch (path) { case "/", "/index.html" -> "index.html"; case "/styles.css" -> "styles.css"; case "/app.js" -> "app.js"; case "/explanation.js" -> "explanation.js"; default -> null; };
+            String file = switch (path) { case "/", "/index.html" -> "index.html"; case "/styles.css" -> "styles.css"; case "/app.js" -> "app.js"; case "/explanation.js" -> "explanation.js"; case "/chat.js" -> "chat.js"; default -> null; };
             if (file == null) { send(exchange, 404, "text/plain", "Not found"); return; }
             String type = file.endsWith("css") ? "text/css" : file.endsWith("js") ? "text/javascript" : "text/html";
             send(exchange, 200, type, Files.readString(Path.of("web", file)));

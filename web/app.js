@@ -12,6 +12,7 @@ const number = value => Number(value).toLocaleString('en-US', {maximumFractionDi
 const pct = value => value === null ? 'N/A' : `${value.toFixed(2)}%`;
 
 function clearResult() {
+  CandleChatUI.reset();
   generation++;
   if (controller) controller.abort();
   document.querySelectorAll('button[type=submit]').forEach(button => button.disabled = false);
@@ -71,6 +72,7 @@ $('example').addEventListener('click', () => {
 });
 function render(data) {
   const candle = data.candle;
+  CandleChatUI.setCandle(candle);
   const explanation = explainCandle(candle);
   $('explanation-title').textContent = explanation.title;
   $('explanation-points').replaceChildren();

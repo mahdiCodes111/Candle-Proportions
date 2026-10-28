@@ -24,6 +24,7 @@ Make it quicker and easier to get consistent candle proportions without repeated
 - See a scaled candlestick, the percentages, raw component sizes, and price range.
 - Read a plain-language explanation of the candle’s direction, body, both wicks, and closing position.
 - Copy the breakdown and explanation for your analysis.
+- Ask follow-up questions about the displayed candle with optional OpenAI-powered chat.
 - Try an explicitly labeled illustrative candle without an account or API key.
 - Optionally select a stock and trading date to retrieve daily OHLC prices through Alpha Vantage.
 - Reject invalid prices and explain zero-range candles.
@@ -62,7 +63,7 @@ The scripts compile the Java source into `out/` and then start `CandleServer`. T
 You can also compile and run directly from the project root:
 
 ```sh
-javac -d out src/CandleCalculator.java src/MarketData.java src/CandleServer.java
+javac -d out src/CandleCalculator.java src/MarketData.java src/CandleServer.java src/CandleChat.java src/Json.java
 java -cp out CandleServer
 ```
 
@@ -133,11 +134,13 @@ The browser sends OHLC values to Java, Java calculates the result, and JavaScrip
 
 ## API
 
-All endpoints use GET and return JSON. Errors return an appropriate non-200 HTTP status and an `error` string.
+Read-only data endpoints use GET; `/api/chat` uses POST and makes a potentially billable OpenAI request. All return JSON. Errors return an appropriate non-200 HTTP status and an `error` string.
 
 - `/api/status` — whether a stock-data key is configured (not a validation of the key).
 - `/api/calculate?open=100&high=110&low=90&close=105` — manual calculation.
 - `/api/candle?symbol=AAPL&date=2026-10-23` — exact trading-date lookup; omit date for latest available.
+
+- `POST /api/chat` — question, four OHLC price strings, and optional recent user/assistant history. Requires a same-origin request and the `X-Candle-Chat: 1` header.
 
 The server listens only on `127.0.0.1` for local use. It has no login, trade execution, or persistent portfolio storage. Do not expose it publicly without adding an appropriate hosting/security design. To change the default port, set `PORT` before starting the server.
 
@@ -164,3 +167,33 @@ After any successful manual calculation or stock lookup, **Reading this candle**
 These descriptions report the supplied prices; they do not infer the order of intraday moves, label a confirmed reversal, or predict the next candle. No AI service or extra API key is required for explanations. Named pattern classifications remain outside this version.
 
 Optional explanation checks (requires Node.js): `node tests/explanation.test.js`. Node.js is only needed to run these JavaScript tests, not to run the Java app.
+
+## AI candle chat
+
+After calculating a candle, the **Ask about this candle** panel lets you ask questions and follow up. This is an OpenAI API integration, not an embedded ChatGPT account or access to your existing ChatGPT conversations. It needs an OpenAI API key with API access and available credits/billing. ChatGPT subscription access alone is not a configuration for this app.
+
+Stop the server with Ctrl+C. In Windows PowerShell:
+
+```powershell
+$env:OPENAI_API_KEY="YOUR_OPENAI_API_KEY"
+.\run.bat
+```
+
+macOS/Linux:
+
+```sh
+export OPENAI_API_KEY="YOUR_OPENAI_API_KEY"
+sh run.sh
+```
+
+Create/manage keys at https://platform.openai.com/api-keys. Keep the actual key in your local environment, never in Git, browser code, screenshots, or chat messages. The key is independent of `ALPHA_VANTAGE_API_KEY`; manual candles can use AI chat without stock lookup. API usage may incur charges; check your API account's billing and usage limits.
+
+Default model: `gpt-6-luna`. Set `OPENAI_MODEL` before starting Java to use another Responses-compatible model your API project can access. An invalid/unavailable model or key produces an error; the app does not pretend to generate a reply. See [Responses text generation](https://developers.openai.com/api/docs/guides/text) and [the default model](https://developers.openai.com/api/docs/models/gpt-6-luna).
+
+On Send, the app sends your question, the displayed candle's OHLC prices (revalidated and recalculated by Java), and up to the last four chat messages to OpenAI. No request is sent merely by calculating or viewing a candle. Messages live only in page memory and clear when inputs change, you switch modes, click Clear chat, or reload. Requests use `store: false`; this is not a promise of zero provider retention. Consult [OpenAI data controls](https://developers.openai.com/api/docs/guides/your-data). Clearing the chat cannot retract a request already sent, which may still incur usage.
+
+The assistant has no web access, live news, volume, prior candles, portfolio access, or trade execution. Replies are rendered as plain text. Generated answers can be mistaken; the ordinary calculator and rule-based explanation keep working without AI.
+
+Implementation: `src/CandleChat.java` handles the provider call, `src/Json.java` handles bounded JSON parsing/serialization, and `web/chat.js` manages chat state. Requests have input/output limits, one concurrent provider call, a short cooldown, and same-origin checks for the local app. This is still a localhost-only personal application, not a multi-user hosted service.
+
+Validation: Java chat payload/response fixtures and local HTTP checks cover validation, missing keys, text/refusal output, and cross-origin rejection. No live paid OpenAI call has been verified in this workspace.

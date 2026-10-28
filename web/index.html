@@ -2,7 +2,7 @@
 <!-- Written collaboratively by Mahdi Chowdhury and OpenAI Codex.
 Mahdi: product idea, requirements, and direction. Codex: generated implementation and explanations. -->
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Candle Proportions</title><meta name="description" content="A focused daily candlestick calculator: real body, upper wick, and lower wick."><link rel="stylesheet" href="/styles.css"><script src="/explanation.js" defer></script><script src="/app.js" defer></script></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Candle Proportions</title><meta name="description" content="A focused daily candlestick calculator: real body, upper wick, and lower wick."><link rel="stylesheet" href="/styles.css"><script src="/explanation.js" defer></script><script src="/chat.js" defer></script><script src="/app.js" defer></script></head>
 <body>
 <header class="topbar"><a href="/" class="brand"><span class="mark" aria-hidden="true">╂</span> Candle<span class="light">Proportions</span></a><span class="personal">PERSONAL ANALYSIS / V0.1</span></header>
 <main>
@@ -23,7 +23,16 @@ Mahdi: product idea, requirements, and direction. Codex: generated implementatio
 <section class="results-panel" aria-labelledby="results-title"><div class="section-heading"><span class="step">02</span><h2 id="results-title">The breakdown</h2><span id="direction" class="badge">READY WHEN YOU ARE</span></div>
 <div id="empty" class="empty"><svg viewBox="0 0 100 150" width="100" height="150" aria-hidden="true"><path d="M50 12V138" stroke="currentColor" stroke-width="3"/><rect x="27" y="45" width="46" height="57" rx="4" fill="currentColor"/></svg><h3>A clearer view starts here.</h3><p>Enter OHLC prices or try an example<br>to see the anatomy of your candle.</p></div>
 <div id="result" hidden><div class="result-meta"><h3 id="result-label">Manual candle</h3><span id="source">Manual entry</span></div><div class="anatomy"><div class="candle-visual"><svg id="candle-svg" viewBox="0 0 180 300" role="img" aria-label="Candle scaled to its high and low"><path class="guide" d="M14 24H166M14 276H166"/><line id="upper-line" x1="90" x2="90"/><rect id="candle-body" x="62" width="56" rx="2"/><line id="lower-line" x1="90" x2="90"/><text x="10" y="15">HIGH</text><text x="10" y="296">LOW</text></svg></div><div class="metrics"><article><div><span class="dot upper"></span>Upper wick</div><strong id="upper-percent">—</strong><small id="upper-value"></small></article><article class="body-metric"><div><span class="dot body"></span>Real body</div><strong id="body-percent">—</strong><small id="body-value"></small></article><article><div><span class="dot lower"></span>Lower wick</div><strong id="lower-percent">—</strong><small id="lower-value"></small></article></div></div>
-<div class="range-row"><span>Total range <strong id="range"></strong></span><span id="range-note">100% of the candle</span></div><dl id="prices" class="prices"></dl><p id="data-note" class="small"></p><section class="explanation" aria-labelledby="explanation-title" aria-live="polite"><p class="eyebrow">READING THIS CANDLE</p><h3 id="explanation-title"></h3><ul id="explanation-points"></ul><p id="explanation-context" class="small"></p></section><button id="copy" class="copy" type="button">Copy breakdown + explanation</button></div>
+<div class="range-row"><span>Total range <strong id="range"></strong></span><span id="range-note">100% of the candle</span></div><dl id="prices" class="prices"></dl><p id="data-note" class="small"></p><section class="explanation" aria-labelledby="explanation-title" aria-live="polite"><p class="eyebrow">READING THIS CANDLE</p><h3 id="explanation-title"></h3><ul id="explanation-points"></ul><p id="explanation-context" class="small"></p></section><button id="copy" class="copy" type="button">Copy breakdown + explanation</button>
+<section class="chat-panel" aria-labelledby="chat-title">
+<div class="chat-heading"><h3 id="chat-title">Ask about this candle</h3><button id="chat-clear" type="button" class="copy">Clear chat</button></div>
+<p class="small">Powered by the OpenAI API. Sending shares this candle’s prices, your question, and recent chat messages with OpenAI. API usage may cost money.</p>
+<p id="chat-setup" class="setup-note">Checking chat availability…</p>
+<div id="chat-messages" role="log" aria-live="polite" aria-label="Candle questions and answers"></div>
+<form id="chat-form"><label for="chat-question">Your question</label><textarea id="chat-question" rows="3" maxlength="1500" placeholder="What does the lower wick tell me?" required disabled></textarea><button id="chat-send" class="primary" type="submit" disabled>Send question</button></form>
+<p id="chat-status" class="small" role="status" aria-live="polite"></p>
+<p class="small">Answers can be mistaken. No live web data or trade execution.</p>
+</section></div>
 </section></div>
 <footer><span>Built for your process.</span><span>Measurements only. Apply your own criteria.</span></footer>
 </main></body></html>
