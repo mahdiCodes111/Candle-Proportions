@@ -1,0 +1,7 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {"type": "java", "name": "Run Candle Proportions", "request": "launch", "mainClass": "CandleServer", "cwd": "${workspaceFolder}"},
+    {"type": "java", "name": "Test candle calculations", "request": "launch", "mainClass": "CandleTests", "cwd": "${workspaceFolder}"}
+  ]
+}

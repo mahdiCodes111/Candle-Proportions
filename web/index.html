@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Candle Proportions</title><meta name="description" content="A focused daily candlestick calculator: real body, upper wick, and lower wick."><link rel="stylesheet" href="/styles.css"><script src="/app.js" defer></script></head>
+<body>
+<header class="topbar"><a href="/" class="brand"><span class="mark" aria-hidden="true">╂</span> Candle<span class="light">Proportions</span></a><span class="personal">PERSONAL ANALYSIS / V0.1</span></header>
+<main>
+<section class="intro"><p class="eyebrow">LESS GUESSWORK. MORE CLARITY.</p><h1>Know your candle.</h1><p>Break a daily candle into its three parts.<br>Exact proportions, without the screenshot routine.</p></section>
+<div class="workspace">
+<section class="input-panel" aria-labelledby="input-title"><div class="section-heading"><span class="step">01</span><h2 id="input-title">Choose your candle</h2></div>
+<div class="mode-switch" role="group" aria-label="Input method"><button id="manual-tab" class="active" aria-pressed="true" type="button">Enter prices</button><button id="lookup-tab" aria-pressed="false" type="button">Stock lookup</button></div>
+<form id="manual-form"><p class="hint">Enter the four prices from your daily chart.</p><div class="price-grid">
+<label>Open <input name="open" type="number" min="0.00000001" max="999999999999" step="any" placeholder="100.00" inputmode="decimal" required></label>
+<label>High <input name="high" type="number" min="0.00000001" max="999999999999" step="any" placeholder="110.00" inputmode="decimal" required></label>
+<label>Low <input name="low" type="number" min="0.00000001" max="999999999999" step="any" placeholder="90.00" inputmode="decimal" required></label>
+<label>Close <input name="close" type="number" min="0.00000001" max="999999999999" step="any" placeholder="105.00" inputmode="decimal" required></label>
+</div><button class="primary" type="submit">Calculate proportions <span aria-hidden="true">↗</span></button><button class="example" id="example" type="button">Try an example candle</button></form>
+<form id="lookup-form" hidden><p class="hint">Daily prices from Alpha Vantage. Not a live quote.</p><label>Stock symbol<input name="symbol" placeholder="AAPL" maxlength="20" autocomplete="off" required></label><label>Trading date <span class="optional">optional</span><input name="date" type="date"></label><p class="small">Leave the date blank for the latest available candle. Recent 100 trading days only.</p><button class="primary" type="submit">Look up candle <span aria-hidden="true">↗</span></button><p id="lookup-status" class="setup-note">Checking stock-data connection…</p></form>
+<p id="message" role="status" aria-live="polite"></p>
+<details class="formula"><summary>How are these calculated?</summary><p>Range = High − Low</p><p>Body = |Close − Open|</p><p>Upper wick = High − max(Open, Close)</p><p>Lower wick = min(Open, Close) − Low</p><p>Each percentage = part ÷ range × 100.</p><p>A zero-range candle has undefined percentages. Displayed percentages are rounded to two decimal places.</p></details>
+</section>
+<section class="results-panel" aria-labelledby="results-title"><div class="section-heading"><span class="step">02</span><h2 id="results-title">The breakdown</h2><span id="direction" class="badge">READY WHEN YOU ARE</span></div>
+<div id="empty" class="empty"><svg viewBox="0 0 100 150" width="100" height="150" aria-hidden="true"><path d="M50 12V138" stroke="currentColor" stroke-width="3"/><rect x="27" y="45" width="46" height="57" rx="4" fill="currentColor"/></svg><h3>A clearer view starts here.</h3><p>Enter OHLC prices or try an example<br>to see the anatomy of your candle.</p></div>
+<div id="result" hidden><div class="result-meta"><h3 id="result-label">Manual candle</h3><span id="source">Manual entry</span></div><div class="anatomy"><div class="candle-visual"><svg id="candle-svg" viewBox="0 0 180 300" role="img" aria-label="Candle scaled to its high and low"><path class="guide" d="M14 24H166M14 276H166"/><line id="upper-line" x1="90" x2="90"/><rect id="candle-body" x="62" width="56" rx="2"/><line id="lower-line" x1="90" x2="90"/><text x="10" y="15">HIGH</text><text x="10" y="296">LOW</text></svg></div><div class="metrics"><article><div><span class="dot upper"></span>Upper wick</div><strong id="upper-percent">—</strong><small id="upper-value"></small></article><article class="body-metric"><div><span class="dot body"></span>Real body</div><strong id="body-percent">—</strong><small id="body-value"></small></article><article><div><span class="dot lower"></span>Lower wick</div><strong id="lower-percent">—</strong><small id="lower-value"></small></article></div></div>
+<div class="range-row"><span>Total range <strong id="range"></strong></span><span id="range-note">100% of the candle</span></div><dl id="prices" class="prices"></dl><p id="data-note" class="small"></p><button id="copy" class="copy" type="button">Copy breakdown</button></div>
+</section></div>
+<footer><span>Built for your process.</span><span>Measurements only. Apply your own criteria.</span></footer>
+</main></body></html>
