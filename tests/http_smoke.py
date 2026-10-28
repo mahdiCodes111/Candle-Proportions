@@ -15,7 +15,7 @@ def request(path, expected=200, method="GET"):
     assert status == expected, (path, status, body)
     return body
 
-for asset in ["/", "/styles.css", "/app.js"]:
+for asset in ["/", "/styles.css", "/app.js", "/explanation.js"]:
     assert request(asset)
 assert json.loads(request("/api/status"))["lookupConfigured"] is False
 result = json.loads(request("/api/calculate?open=100&high=110&low=90&close=105"))["candle"]

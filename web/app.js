@@ -71,6 +71,15 @@ $('example').addEventListener('click', () => {
 });
 function render(data) {
   const candle = data.candle;
+  const explanation = explainCandle(candle);
+  $('explanation-title').textContent = explanation.title;
+  $('explanation-points').replaceChildren();
+  for (const point of explanation.points) {
+    const item = document.createElement('li');
+    item.textContent = point;
+    $('explanation-points').append(item);
+  }
+  $('explanation-context').textContent = explanation.context;
   $('empty').hidden = true; $('result').hidden = false;
   $('direction').textContent = candle.direction.toUpperCase();
   $('result-label').textContent = data.example ? 'Example candle' : data.symbol ? `${data.symbol} · ${data.date}` : 'Manual candle';
@@ -101,7 +110,9 @@ function render(data) {
 $('copy').addEventListener('click', async () => {
   if (!current) return;
   const c = current.candle;
-  const text = `${$('result-label').textContent}\nOpen ${c.open} | High ${c.high} | Low ${c.low} | Close ${c.close}\nBody ${pct(c.bodyPercent)} | Upper wick ${pct(c.upperPercent)} | Lower wick ${pct(c.lowerPercent)}\nSource: ${$('source').textContent}`;
+  const explanation = explainCandle(c);
+  const explanationText = [explanation.title, ...explanation.points, explanation.context].join('\n');
+  const text = `${$('result-label').textContent}\nOpen ${c.open} | High ${c.high} | Low ${c.low} | Close ${c.close}\nBody ${pct(c.bodyPercent)} | Upper wick ${pct(c.upperPercent)} | Lower wick ${pct(c.lowerPercent)}\nSource: ${$('source').textContent}\n\n${explanationText}`;
   try { await navigator.clipboard.writeText(text); $('message').textContent = 'Breakdown copied.'; }
   catch { $('message').textContent = 'Clipboard is unavailable. Select the displayed values to copy them.'; }
 });

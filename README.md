@@ -22,7 +22,8 @@ Make it quicker and easier to get consistent candle proportions without repeated
 
 - Enter Open, High, Low, and Close and calculate all three proportions.
 - See a scaled candlestick, the percentages, raw component sizes, and price range.
-- Copy the breakdown for your analysis.
+- Read a plain-language explanation of the candle’s direction, body, both wicks, and closing position.
+- Copy the breakdown and explanation for your analysis.
 - Try an explicitly labeled illustrative candle without an account or API key.
 - Optionally select a stock and trading date to retrieve daily OHLC prices through Alpha Vantage.
 - Reject invalid prices and explain zero-range candles.
@@ -124,6 +125,7 @@ Prices must be positive, with up to 12 digits before the decimal and 8 after it.
 | `web/index.html` | Page structure and accessible input forms. |
 | `web/styles.css` | Responsive layout and appearance. |
 | `web/app.js` | Sends requests to Java and renders results. |
+| `web/explanation.js` | Turns the calculated proportions into factual, plain-language descriptions. |
 | `tests/CandleTests.java` | Arithmetic, validation, randomized invariants, and provider-parser tests. |
 | `tests/http_smoke.py` | Optional running-server checks using Python’s standard library. |
 
@@ -154,3 +156,11 @@ For optional HTTP checks, start the server **without an API key** on port 8080, 
 First implementation complete. Java compilation, calculation/parser tests, JavaScript syntax, and local HTTP integration checks pass. Browser visual/interaction verification and a live provider lookup are still to be completed.
 
 Suggested learning order: understand `CandleCalculator`, run its tests, follow a manual request through `CandleServer` and `web/app.js`, then connect your stock-data key. Automatic candle-pattern classifications and trading signals are intentionally outside this first version.
+
+## Candle explanations
+
+After any successful manual calculation or stock lookup, **Reading this candle** explains the open-to-close direction, how the body compares with the combined wicks, what each wick measures, and where the close sits within the total range. Zero-range candles get a dedicated explanation without percentages. Editing inputs hides the old result and its explanation until you calculate again. **Copy breakdown + explanation** includes both.
+
+These descriptions report the supplied prices; they do not infer the order of intraday moves, label a confirmed reversal, or predict the next candle. No AI service or extra API key is required for explanations. Named pattern classifications remain outside this version.
+
+Optional explanation checks (requires Node.js): `node tests/explanation.test.js`. Node.js is only needed to run these JavaScript tests, not to run the Java app.

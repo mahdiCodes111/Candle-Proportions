@@ -59,7 +59,7 @@ public final class CandleServer {
                     + ",\"date\":" + quote(selected.toString()) + ",\"fetchedAt\":" + quote(series.fetchedAt().toString())
                     + ",\"candle\":" + candle.json() + "}"); return;
             }
-            String file = switch (path) { case "/", "/index.html" -> "index.html"; case "/styles.css" -> "styles.css"; case "/app.js" -> "app.js"; default -> null; };
+            String file = switch (path) { case "/", "/index.html" -> "index.html"; case "/styles.css" -> "styles.css"; case "/app.js" -> "app.js"; case "/explanation.js" -> "explanation.js"; default -> null; };
             if (file == null) { send(exchange, 404, "text/plain", "Not found"); return; }
             String type = file.endsWith("css") ? "text/css" : file.endsWith("js") ? "text/javascript" : "text/html";
             send(exchange, 200, type, Files.readString(Path.of("web", file)));
