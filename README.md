@@ -1,5 +1,119 @@
 # Candle Proportions
 
+> A personal candle-proportion calculator that helps me check stock candles against my investment criteria.
+
+**Author:** Mahdi Chowdhury · **Course:** CMP 464/343 Product 1 · **Last updated:** November 2, 2026
+
+## 1. About Me (the User)
+
+I am an investor trying to assess stock setups and their possible outcomes.
+
+**The last 3 times this happened:**
+
+1. At Parkchester, I needed a candlestick's proportions to help evaluate an investment. I opened the chart and sent a screenshot to ChatGPT to get an answer, which took a lot of time.
+2. While backtesting at home, I could not confidently judge the proportions by eye. This caused stress for several minutes, and I manually entered the prices.
+3. While reviewing Disney, I found a setup that had failed and felt panicked until I checked its actual proportions.
+
+**What it costs me:**
+
+- **Time:** About 5 hours monthly.
+- **Money:** My estimated potential cost is $1,000; this is not a verified loss caused by this process.
+- **Energy:** The anticipation and uncertainty drain my energy.
+- **Joy:** The process takes enjoyment out of my analysis.
+
+## 2. Problem Statement
+
+**Gut check:**
+
+I need immediate details about a candlestick's proportions because this would automate part of my analysis.
+
+**Five Whys:**
+
+1. **Why do I need candle proportions?**  
+   To check whether a stock's daily candle fits my investment criteria.
+2. **Why do I need exact proportions instead of judging visually?**  
+   Visual estimates can be inaccurate, and I might mistakenly identify a candle as a spinning top.
+3. **Why does misidentifying a spinning top matter?**  
+   It could lead me to accept a setup that I consider less reliable.
+4. **Why do I consider that setup less reliable?**  
+   I believe it is more volatile and less dependable. I still need evidence or a concrete example to support this belief.
+5. **Why is my current process difficult?**  
+   I have to open Robinhood, take and crop an OHLC screenshot, open ChatGPT, upload it, and explain what I mean by proportions. Without that context, ChatGPT may misunderstand my request.
+
+**Problem statement:**
+
+When I analyze a stock's daily candle to check whether it meets my investment criteria, I struggle to get its real-body, upper-wick, and lower-wick percentages quickly and consistently, which costs me about one hour across roughly 20 checks per week. This happens because I have to move the price information between services and explain the calculations I want.
+
+Right now I open Robinhood, take and crop a screenshot of the open, high, low, and close prices, then upload it to ChatGPT and request the proportions, but this takes several steps and my request can be misunderstood.
+
+**I'll know this is solved when:** I can get the three percentages consistently without taking, cropping, and uploading screenshots or repeatedly explaining what “proportions” means.
+
+## 3. Existing Solutions
+
+I've used Robinhood screenshots with ChatGPT and a calculator to find candle proportions. Robinhood provides the open, high, low, and close prices, and ChatGPT calculates the proportions, but taking, cropping, and uploading screenshots takes time, and I sometimes have to explain what I mean. A calculator is convenient for the arithmetic, but calculating all three proportions takes even longer and feels tedious.
+
+**The gap:** What's missing for me is a quick, consistent way to get the real-body, upper-wick, and lower-wick percentages without repeating these steps.
+
+## 4. Features & Benefits
+
+| Feature (what it does) | Benefit (how my life gets better) | MVP or Later? |
+|---|---|---|
+| Calculate candle proportions | Get consistent percentages without repeating the arithmetic. | MVP |
+| Explain the candlestick in text | Understand the calculated proportions more easily. | MVP |
+| Provide a question box | Ask follow-up questions about the candle. | Later |
+
+**MVP:**
+
+- Calculator.
+- Text explaining the candlestick.
+
+**Later:**
+
+- Ask questions.
+
+**Not doing:**
+
+- Predictions.
+
+## 5. Tech Stack
+
+### Front end
+
+- **Surface:** Web.
+- **Tools:** HTML, CSS, and JavaScript.
+- **Why:** A browser interface lets me enter the open, high, low, and close prices and immediately see the candle's proportions and explanation while analyzing stocks.
+
+### Back end
+
+| Piece | Choice | Why |
+|---|---|---|
+| Server / API | Java with its built-in HTTP server | Uses a language I'm learning and handles the candle calculations. |
+| Data storage | No database for the MVP | I only need to calculate the current candle, so saving previous results is unnecessary for now. |
+| Outside services (optional) | None required for the MVP; Alpha Vantage for stock lookup and OpenAI API for questions later | Manual entry supports the core calculator. Outside services could reduce typing and support follow-up questions. |
+| Hosting / deploy | Locally on my computer | Lets me build and test the product for personal use before deciding whether I need online hosting. |
+
+### Architecture sketch
+
+```mermaid
+flowchart LR
+  U["Me: enter candle prices"] --> FE["Front end: HTML, CSS, JavaScript"]
+  FE --> API["Back end: Java server"]
+  API --> C["Calculate proportions"]
+  C --> FE
+```
+
+The browser displays the proportions, candle drawing, and explanation. No database is needed for the MVP.
+
+## 6. Open Questions
+
+I am still unsure about the OpenAI API and the API for retrieving stock candlesticks. These could save a lot of time, but I need to find out whether they cost money and how much they would cost for my usage before moving forward.
+
+---
+
+## Implementation and setup
+
+The sections above describe my product spec and intended MVP. The current implementation also includes optional stock lookup and candle chat; their setup and testing limitations are documented below.
+
 ## Authorship
 
 Written collaboratively by **Mahdi Chowdhury and OpenAI Codex**. Mahdi supplied the product idea, personal requirements, and implementation direction; Codex generated the initial code and explanatory comments under that direction.
@@ -7,36 +121,6 @@ Written collaboratively by **Mahdi Chowdhury and OpenAI Codex**. Mahdi supplied 
 This credit covers the Java source, front end, tests, run scripts, Git configuration, and VS Code configuration, including `.vscode/launch.json` and `.vscode/settings.json`. Those two files remain valid JSON without comment headers.
 
 For a line-by-line explanation of the calculations, read the comments in [`src/CandleCalculator.java`](src/CandleCalculator.java).
-
-A personal project to calculate the real-body, upper-wick, and lower-wick percentages of a stock’s daily candlestick.
-
-## Why I’m Building This
-
-I use candle proportions to check whether a stock meets my investment criteria. Previously, I took and cropped screenshots from Robinhood, uploaded them to ChatGPT, and asked for the calculations. I’ve also used a calculator, but the process is repetitive and time-consuming.
-
-## Goal
-
-Make it quicker and easier to get consistent candle proportions without repeatedly taking screenshots or explaining the calculation.
-
-## First Version
-
-- Enter Open, High, Low, and Close and calculate all three proportions.
-- See a scaled candlestick, the percentages, raw component sizes, and price range.
-- Read a plain-language explanation of the candle’s direction, body, both wicks, and closing position.
-- Copy the breakdown and explanation for your analysis.
-- Ask follow-up questions about the displayed candle with optional OpenAI-powered chat.
-- Try an explicitly labeled illustrative candle without an account or API key.
-- Optionally select a stock and trading date to retrieve daily OHLC prices through Alpha Vantage.
-- Reject invalid prices and explain zero-range candles.
-
-Manual calculation works without external services. Stock lookup requires your own Alpha Vantage API key. This is a local personal application, not a deployed website.
-
-## Technology
-
-- **Front end:** HTML, CSS, and vanilla JavaScript.
-- **Back end:** Java 17+ using the JDK HTTP server and HTTP client.
-- **Data:** Alpha Vantage daily CSV, optional. No database or third-party Java dependencies.
-- **Arithmetic:** `BigDecimal` preserves decimal input for subtraction and division. Percentages are calculated to six decimal places and displayed to two.
 
 ## Run in VS Code
 
